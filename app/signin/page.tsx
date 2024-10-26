@@ -3,9 +3,11 @@ import { useState } from 'react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import config from '../config';
+import { useRouter } from 'next/navigation';
 export default function Page() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const router = useRouter()
 
     const signin = async () => {
         try {
@@ -18,19 +20,26 @@ export default function Page() {
 
             if (res.data.token !== undefined) {
                 localStorage.setItem(config.token, res.data.token)
-            } else {
+                localStorage.setItem('next_name', res.data.name)
+                localStorage.setItem('next_user_id', res.data.id)
+
+
+                router.push('/backoffice')
+            }
+        } catch (e: any) {
+            if (e.response.status == 401) {
                 Swal.fire({
                     title: 'ตรวสอบ Username',
-                    text: 'username or password is wrong',
+                    text: 'username ไม่ถูกต้อง',
+                    icon: 'error'
+                })
+            } else {
+                Swal.fire({
+                    title: 'error',
+                    text: e.message,
                     icon: 'error'
                 })
             }
-        } catch (e: any) {
-            Swal.fire({
-                title: 'error',
-                text: e.message,
-                icon: 'error'
-            })
         }
     }
 
@@ -53,7 +62,7 @@ export default function Page() {
                                 </div>
                             </div>
                             <div className="input-group mb-3">
-                                <input type="password" className="form-control" placeholder="Password"  onChange={(e) => setPassword(e.target.value)} />
+                                <input type="password" className="form-control" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
                                 <div className="input-group-append">
                                     <div className="input-group-text">
                                         <span className="fas fa-lock"></span>
