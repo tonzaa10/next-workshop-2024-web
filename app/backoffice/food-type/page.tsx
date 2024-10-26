@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import axios from 'axios';
 import config from '@/app/config';
 
+
 export default function Page() {
     const [name, setName] = useState('');
     const [remark, setRemark] = useState('');
@@ -113,7 +114,7 @@ export default function Page() {
                     </thead>
                     <tbody>
                         {foodTypes.map((item: any) =>
-                            <tr>
+                            <tr key={item.id}>
                                 <td>{item.name}</td>
                                 <td>{item.remark}</td>
                                 <td className='text-center'>
